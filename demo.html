@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>review-html Demo — 单片机考前速记</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============ CSS VARIABLES ============ */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --border-bright: #cbd5e1;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --text-dim: #94a3b8;
+
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+
+            --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+            --font-body: 'Noto Sans SC', -apple-system, sans-serif;
+        }
+
+        /* ============ RESET ============ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+            scroll-padding-top: 100px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============ HEADER ============ */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0.875rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+
+        .header .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .header .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header .brand-name {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.75);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .header h1 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+        }
+
+        .header .exam-info {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #ffffff;
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ============ QUICK NAV ============ */
+        .quick-nav {
+            display: flex;
+            overflow-x: auto;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none;
+            position: sticky;
+            top: 52px;
+            z-index: 99;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .quick-nav::-webkit-scrollbar { display: none; }
+
+        .quick-nav a {
+            flex-shrink: 0;
+            padding: 0.4rem 0.85rem;
+            background: var(--bg);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .quick-nav a:hover,
+        .quick-nav a:active {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .quick-nav a.demo-badge {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .quick-nav a.demo-badge:hover {
+            background: var(--primary-dark);
+        }
+
+        /* ============ HAMBURGER (mobile) ============ */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 0.625rem;
+            right: 0.75rem;
+            width: 40px;
+            height: 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4.5px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+        }
+
+        .menu-toggle:hover {
+            border-color: var(--primary);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 18px;
+            height: 2.5px;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translateY(7px); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translateY(-7px); }
+
+        .fullscreen-nav {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 150;
+            padding: 4.5rem 1.5rem 1.5rem;
+            overflow-y: auto;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fullscreen-nav.active { display: block; }
+
+        .fullscreen-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .fullscreen-nav a:hover,
+        .fullscreen-nav a:active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .fullscreen-nav .close-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            width: 40px;
+            height: 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .fullscreen-nav .close-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* ============ MAIN ============ */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1.25rem;
+            padding-bottom: 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============ DEMO BANNER ============ */
+        .demo-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        .demo-banner h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-banner p {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .demo-banner .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .demo-banner .feature-tags span {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+
+        /* ============ CARDS ============ */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s, border-color 0.3s;
+            animation: cardReveal 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow);
+            border-color: var(--border-bright);
+        }
+
+        .card:nth-child(2) { animation-delay: 0.05s; }
+        .card:nth-child(3) { animation-delay: 0.1s; }
+        .card:nth-child(4) { animation-delay: 0.15s; }
+        .card:nth-child(5) { animation-delay: 0.2s; }
+        .card:nth-child(6) { animation-delay: 0.25s; }
+
+        @keyframes cardReveal {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .card-header:hover { background: var(--primary-light); }
+
+        .card-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-header .icon {
+            font-size: 1.15rem;
+        }
+
+        .card-header .arrow {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+            flex-shrink: 0;
+        }
+
+        .card.active .card-header .arrow {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card.active .card-content {
+            max-height: 10000px;
+        }
+
+        .card-body {
+            padding: 0 1.25rem 1.25rem;
+        }
+
+        /* ============ SECTION HEADINGS ============ */
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 1.25rem 0 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        h3:first-child { margin-top: 0; }
+
+        /* ============ KNOWLEDGE CARDS ============ */
+        .knowledge-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 0.875rem 1rem;
+            margin: 0.5rem 0;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+
+        .knowledge-card:hover {
+            border-left-color: var(--primary-dark);
+            background: var(--primary-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .knowledge-card h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.375rem;
+        }
+
+        .knowledge-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* ============ ALERT BOXES ============ */
+        .warning-box, .tip-box, .info-box {
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin: 0.75rem 0;
+            font-size: 0.875rem;
+            line-height: 1.7;
+        }
+
+        .warning-box::before, .tip-box::before, .info-box::before {
+            display: block;
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box {
+            background: var(--danger-light);
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .warning-box::before {
+            content: '⚠️ 注意';
+            color: var(--danger);
+        }
+
+        .tip-box {
+            background: var(--success-light);
+            border: 1px solid #bbf7d0;
+            color: #14532d;
+        }
+
+        .tip-box::before {
+            content: '💡 提示';
+            color: var(--success);
+        }
+
+        .info-box {
+            background: var(--primary-light);
+            border: 1px solid #bfdbfe;
+            color: #1e3a5f;
+        }
+
+        .info-box::before {
+            content: '📌 重点';
+            color: var(--primary-dark);
+        }
+
+        /* ============ LEVEL TAGS ============ */
+        .level-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            margin-right: 0.3rem;
+            font-weight: 600;
+        }
+
+        .level-tag-master {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .level-tag-understand {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+
+        .level-tag-know {
+            background: #f8fafc;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* ============ CODE BLOCKS ============ */
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+        }
+
+        pre {
+            background: #1e293b;
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin: 0.75rem 0;
+            overflow-x: auto;
+        }
+
+        pre code {
+            background: none;
+            color: #e2e8f0;
+            padding: 0;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .code-template {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin: 0.75rem 0;
+        }
+
+        .code-template h4 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        /* ============ TABLES ============ */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0.75rem 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 0.625rem 0.875rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+
+        th {
+            background: var(--primary);
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: var(--bg); }
+        tr:hover { background: var(--primary-light); }
+
+        /* ============ LISTS ============ */
+        ul, ol {
+            padding-left: 1.5rem;
+            margin: 0.375rem 0;
+        }
+
+        li {
+            margin: 0.3rem 0;
+            font-size: 0.875rem;
+        }
+
+        li::marker { color: var(--primary); }
+
+        /* ============ FORMULA ============ */
+        .formula {
+            font-family: var(--font-mono);
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .addr {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        /* ============ SFR TAGS ============ */
+        .sfr-tag {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            margin-right: 0.25rem;
+        }
+
+        .sfr-io { background: #dbeafe; color: #1d4ed8; }
+        .sfr-bit { background: #fef3c7; color: #92400e; }
+        .sfr-int { background: #fee2e2; color: #991b1b; }
+        .sfr-timer { background: #e0e7ff; color: #3730a3; }
+        .sfr-uart { background: #d1fae5; color: #065f46; }
+
+        .sfr-legend {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* ============ GRID LAYOUT ============ */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        /* ============ STEPS ============ */
+        .steps { counter-reset: step; }
+
+        .step {
+            counter-increment: step;
+            margin: 0.5rem 0;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            background: var(--primary-light);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius);
+            position: relative;
+            font-size: 0.875rem;
+        }
+
+        .step::before {
+            content: counter(step);
+            position: absolute;
+            left: 0.625rem;
+            top: 0.75rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: var(--primary);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+        }
+
+        /* ============ BUTTONS ============ */
+        .back-to-top {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .back-to-top.visible { display: flex; }
+
+        .collapse-all {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            width: 44px;
+            height: 44px;
+            background: var(--card-bg);
+            color: var(--primary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+
+        .collapse-all:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* ============ ACCORDION (sub) ============ */
+        .accordion {
+            margin: 0.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .accordion:hover {
+            border-color: var(--border-bright);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .accordion-header {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text);
+            background: #f1f5f9;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .accordion-header:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            animation: accordionSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes accordionSlide {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .accordion-content.active { display: block; }
+
+        .accordion-icon {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .accordion-icon.active {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .footer p { margin: 0.25rem 0; }
+
+        .footer .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* ============ PRINT ============ */
+        @media print {
+            body { background: white; color: black; }
+            .header, .quick-nav, .menu-toggle, .back-to-top, .collapse-all, .demo-banner { display: none !important; }
+            .card { break-inside: avoid; border: 1px solid #ccc; box-shadow: none; }
+            .card-content { max-height: none !important; }
+            pre { background: #f5f5f5; }
+            pre code { color: #333; }
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+
+            .header .exam-info {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.6rem;
+            }
+
+            .quick-nav { top: 48px; }
+
+            .container { padding: 0.75rem; }
+
+            .card-body { padding: 0 1rem 1rem; }
+
+            h3 { font-size: 0.9rem; }
+
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+
+            .demo-banner { padding: 1.25rem 1.25rem; }
+
+            .back-to-top {
+                bottom: 1rem;
+                right: 1rem;
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+
+            .collapse-all {
+                bottom: 1rem;
+                left: 1rem;
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header .brand-logo { display: none; }
+            .header h1 { font-size: 0.95rem; }
+            .header .exam-info { display: none; }
+
+            .quick-nav { padding: 0.5rem 0.75rem; }
+
+            .quick-nav a {
+                font-size: 0.75rem;
+                padding: 0.35rem 0.7rem;
+            }
+
+            .card-header h2 { font-size: 0.9rem; }
+
+            .card-body { padding: 0 0.75rem 0.75rem; }
+
+            table { font-size: 0.8rem; }
+
+            th, td { padding: 0.5rem 0.625rem; }
+
+            .demo-banner .feature-tags span { font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header">
+        <div class="header-content">
+            <div class="brand">
+                <div class="brand-logo">📖</div>
+                <div class="brand-text">
+                    <span class="brand-name">review-html · demo</span>
+                    <h1>单片机原理及C语言编程应用</h1>
+                </div>
+            </div>
+            <span class="exam-info">📅 2026-06-29</span>
+        </div>
+    </header>
+
+    <!-- ========== QUICK NAV ========== -->
+    <div class="quick-nav">
+        <a href="#demo-overview" class="demo-badge">✨ 功能概览</a>
+        <a href="#module1">C语言基础</a>
+        <a href="#module2">硬件结构</a>
+        <a href="#module3">C51编程</a>
+        <a href="#quick-ref">⚡速记卡片</a>
+        <a href="#code-templates">📄代码模板</a>
+    </div>
+
+    <!-- ========== FULLSCREEN NAV (mobile) ========== -->
+    <button class="menu-toggle" id="menuToggle">
+        <span></span><span></span><span></span>
+    </button>
+
+    <nav class="fullscreen-nav" id="fullscreenNav">
+        <button class="close-btn" onclick="closeMenu()">✕</button>
+        <a href="#demo-overview" onclick="closeMenu()">✨ 功能概览</a>
+        <a href="#module1" onclick="closeMenu()">💻 C语言基础</a>
+        <a href="#module2" onclick="closeMenu()">🔧 硬件结构</a>
+        <a href="#module3" onclick="closeMenu()">📝 C51编程</a>
+        <a href="#quick-ref" onclick="closeMenu()">⚡ 速记卡片</a>
+        <a href="#code-templates" onclick="closeMenu()">📄 代码模板</a>
+        <a href="#table-demo" onclick="closeMenu()">📊 表格展示</a>
+    </nav>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="container">
+
+        <!-- ===== DEMO BANNER ===== -->
+        <section class="demo-banner" id="demo-overview">
+            <h2>✨ review-html 功能展示</h2>
+            <p>本文档使用 review-html 生成的考前速记页面，展示了全套核心功能。
+               基于"单片机原理及C语言编程应用"课程内容，包含 3 个精选模块 + 速记卡片 + 代码模板。</p>
+            <div class="feature-tags">
+                <span>🏷️ 三级标签系统</span>
+                <span>📦 手风琴折叠</span>
+                <span>⚡ 速记卡片</span>
+                <span>📊 响应式表格</span>
+                <span>🧭 双导航方案</span>
+                <span>📱 移动端优化</span>
+                <span>📄 代码高亮</span>
+                <span>🔙 返回顶部</span>
+            </div>
+        </section>
+
+        <!-- ===== MODULE 1: C语言基础 ===== -->
+        <section class="card active" id="module1">
+            <div class="card-header">
+                <h2><span class="icon">💻</span> C语言基础（1-4章）</h2>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="card-body">
+                    <div class="info-box">
+                        考试范围：教材第1、2、3、4章 — 选填 + 编程题重点
+                    </div>
+
+                    <h3>// Ch1 程序设计基础</h3>
+                    <div class="knowledge-card">
+                        <h4>基本概念</h4>
+                        <ul>
+                            <li><span class="level-tag level-tag-know">了解</span>程序 = 数据结构 + 算法</li>
+                            <li><span class="level-tag level-tag-know">了解</span>三种基本结构：顺序、选择、循环</li>
+                            <li><span class="level-tag level-tag-master">熟练掌握</span>N-S图、流程图的识别与绘制</li>
+                        </ul>
+                    </div>
+
+                    <h3>// Ch2 数据类型与运算</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>基本数据类型</h4>
+                        <table>
+                            <tr><th>类型</th><th>字节</th><th>范围</th></tr>
+                            <tr><td><code>int</code></td><td>2/4</td><td>整数</td></tr>
+                            <tr><td><code>float</code></td><td>4</td><td>6-7位有效数字</td></tr>
+                            <tr><td><code>double</code></td><td>8</td><td>15-16位有效数字</td></tr>
+                            <tr><td><code>char</code></td><td>1</td><td>-128 ~ 127</td></tr>
+                        </table>
+                    </div>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>运算符优先级（必记）</h4>
+                        <p class="formula">单目 &gt; 算术 &gt; 移位 &gt; 关系 &gt; 位 &gt; 逻辑 &gt; 条件 &gt; 赋值 &gt; 逗号</p>
+                        <ul>
+                            <li><code>!</code> 优先级最高（单目）</li>
+                            <li><code>&&</code> 高于 <code>||</code></li>
+                            <li>赋值运算符自右向左结合：<code>a=b=c=1</code></li>
+                        </ul>
+                    </div>
+
+                    <h3>// Ch3 选择结构</h3>
+                    <div class="grid-2">
+                        <div class="knowledge-card">
+                            <h4><span class="level-tag level-tag-master">掌握</span>if-else 配对</h4>
+                            <p><code>else</code> 与最近的、未配对的 <code>if</code> 配对</p>
+                        </div>
+                        <div class="knowledge-card">
+                            <h4><span class="level-tag level-tag-master">掌握</span>switch 规则</h4>
+                            <ul>
+                                <li>表达式必须是<strong>整型或字符型</strong></li>
+                                <li><code>case</code> 后必须是<strong>常量表达式</strong></li>
+                                <li>每个 <code>case</code> 后加 <code>break</code>，否则"穿透"</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>// Ch4 循环结构</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">熟练掌握</span>三种循环对比</h4>
+                        <table>
+                            <tr><th>循环</th><th>特点</th><th>适用场景</th></tr>
+                            <tr><td><code>for</code></td><td>已知循环次数</td><td>计数循环</td></tr>
+                            <tr><td><code>while</code></td><td>先判断后执行</td><td>条件循环</td></tr>
+                            <tr><td><code>do-while</code></td><td>至少执行1次</td><td>输入验证</td></tr>
+                        </table>
+                    </div>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-understand">理解</span>break 和 continue</h4>
+                        <ul>
+                            <li><code>break</code>：跳出当前循环</li>
+                            <li><code>continue</code>：跳过本次循环，继续下一次</li>
+                        </ul>
+                    </div>
+                    <div class="tip-box">
+                        重点例题：例4-9（九九乘法表）、例4-10（素数判断）
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== MODULE 2: 硬件结构 ===== -->
+        <section class="card" id="module2">
+            <div class="card-header">
+                <h2><span class="icon">🔧</span> 硬件结构（1-2章）</h2>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="card-body">
+                    <h3>// 片内硬件组成</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>AT89S52 片内资源</h4>
+                        <ul>
+                            <li><strong>CPU</strong>：8位微处理器</li>
+                            <li><strong>ROM</strong>：8KB Flash 程序存储器</li>
+                            <li><strong>RAM</strong>：256B 数据存储器</li>
+                            <li><strong>I/O口</strong>：P0、P1、P2、P3 四个8位并行口</li>
+                            <li><strong>定时器</strong>：T0、T1、T2 三个16位</li>
+                            <li><strong>中断源</strong>：5个（INT0、T0、INT1、T1、串口）</li>
+                            <li><strong>串行口</strong>：UART 全双工</li>
+                        </ul>
+                        <div class="tip-box">
+                            <strong>出题角度：</strong>简答题"51单片机片内包含哪些功能部件？"
+                        </div>
+                    </div>
+
+                    <h3>// 并行I/O口</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>四个并行口对比</h4>
+                        <table>
+                            <tr><th>端口</th><th>类型</th><th>第二功能</th><th>外扩时作用</th></tr>
+                            <tr><td>P0</td><td>开漏输出</td><td>无</td><td>低8位地址/数据复用</td></tr>
+                            <tr><td>P1</td><td>准双向口</td><td>无</td><td>—</td></tr>
+                            <tr><td>P2</td><td>准双向口</td><td>无</td><td>高8位地址</td></tr>
+                            <tr><td>P3</td><td>准双向口</td><td><strong>有</strong></td><td>—</td></tr>
+                        </table>
+                    </div>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>P3口第二功能（常考）</h4>
+                        <div class="grid-2">
+                            <ul>
+                                <li>P3.0 — <span class="sfr-tag sfr-uart">RXD</span> 串行接收</li>
+                                <li>P3.1 — <span class="sfr-tag sfr-uart">TXD</span> 串行发送</li>
+                                <li>P3.2 — <span class="sfr-tag sfr-int">INT0</span> 外部中断0</li>
+                                <li>P3.3 — <span class="sfr-tag sfr-int">INT1</span> 外部中断1</li>
+                            </ul>
+                            <ul>
+                                <li>P3.4 — <span class="sfr-tag sfr-timer">T0</span> 定时器0输入</li>
+                                <li>P3.5 — <span class="sfr-tag sfr-timer">T1</span> 定时器1输入</li>
+                                <li>P3.6 — <span class="sfr-tag sfr-bit">WR</span> 外部RAM写</li>
+                                <li>P3.7 — <span class="sfr-tag sfr-bit">RD</span> 外部RAM读</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>// 存储结构</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-understand">理解</span>片内RAM空间（256B）</h4>
+                        <table>
+                            <tr><th>地址</th><th>区域</th><th>说明</th></tr>
+                            <tr><td>00H-1FH</td><td>工作寄存器区</td><td>4组 × 8个（R0-R7），RS1/RS0选择</td></tr>
+                            <tr><td>20H-2FH</td><td>位寻址区</td><td>128个位地址（00H-7FH）</td></tr>
+                            <tr><td>30H-7FH</td><td>通用RAM区</td><td>数据缓冲区、堆栈</td></tr>
+                            <tr><td>80H-FFH</td><td>SFR区</td><td>特殊功能寄存器</td></tr>
+                        </table>
+                        <div class="warning-box">
+                            出题重点：四个区域的地址范围和功能，特别是位寻址区
+                        </div>
+                    </div>
+
+                    <h3>// 周期计算</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>四种周期（12MHz举例）</h4>
+                        <table>
+                            <tr><th>周期</th><th>关系</th><th>12MHz时</th></tr>
+                            <tr><td>振荡周期</td><td>= 1 / fosc</td><td>1/12 μs</td></tr>
+                            <tr><td>时钟周期</td><td>= 2 × 振荡周期</td><td>1/6 μs</td></tr>
+                            <tr><td>机器周期</td><td>= 12 × 振荡周期</td><td><strong>1 μs</strong></td></tr>
+                            <tr><td>指令周期</td><td>= 1 ~ 4 机器周期</td><td>1 ~ 4 μs</td></tr>
+                        </table>
+                        <p class="formula" style="margin-top:0.5rem;">机器周期 = 12 / fosc</p>
+                    </div>
+                    <p class="sfr-legend">
+                        <span class="sfr-tag sfr-io">IO口</span>
+                        <span class="sfr-tag sfr-bit">可位寻址</span>
+                        <span class="sfr-tag sfr-int">中断</span>
+                        <span class="sfr-tag sfr-timer">定时器</span>
+                        <span class="sfr-tag sfr-uart">串口</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== MODULE 3: C51编程 ===== -->
+        <section class="card" id="module3">
+            <div class="card-header">
+                <h2><span class="icon">📝</span> C51编程语言基础</h2>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="card-body">
+                    <div class="info-box">
+                        C51编程语言基础，重点掌握数据类型、SFR定义、中断函数
+                    </div>
+
+                    <h3>// C51特殊数据类型</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>扩展关键字</h4>
+                        <table>
+                            <tr><th>类型</th><th>说明</th><th>示例</th></tr>
+                            <tr><td><code>bit</code></td><td>位变量（1位）</td><td><code>bit flag;</code></td></tr>
+                            <tr><td><code>sbit</code></td><td>特殊功能位</td><td><code>sbit LED = P1^0;</code></td></tr>
+                            <tr><td><code>sfr</code></td><td>特殊功能寄存器</td><td><code>sfr P1 = 0x90;</code></td></tr>
+                            <tr><td><code>sfr16</code></td><td>16位特殊功能寄存器</td><td><code>sfr16 T0 = 0x8A;</code></td></tr>
+                        </table>
+                    </div>
+
+                    <h3>// 中断函数</h3>
+                    <div class="code-template">
+                        <h4>📄 中断服务函数模板</h4>
+                        <pre><code>// 中断函数定义格式
+void 函数名() interrupt 中断号 [using 寄存器组]
+
+// 示例：外部中断0
+void Ext0_ISR() interrupt 0 {
+    // 中断处理代码
+}
+
+// 示例：定时器0中断
+void Timer0_ISR() interrupt 1 {
+    TH0 = (65536 - 50000) / 256;
+    TL0 = (65536 - 50000) % 256;
+    // 处理代码
+}</code></pre>
+                        <p><strong>中断源与入口地址：</strong></p>
+                        <table>
+                            <tr><th>中断源</th><th>入口地址</th><th>中断号</th></tr>
+                            <tr><td>INT0（外部中断0）</td><td class="addr">0003H</td><td>0</td></tr>
+                            <tr><td>T0（定时器0）</td><td class="addr">000BH</td><td>1</td></tr>
+                            <tr><td>INT1（外部中断1）</td><td class="addr">0013H</td><td>2</td></tr>
+                            <tr><td>T1（定时器1）</td><td class="addr">001BH</td><td>3</td></tr>
+                            <tr><td>串口</td><td class="addr">0023H</td><td>4</td></tr>
+                        </table>
+                    </div>
+
+                    <h3>// 定时器初值计算</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>方式1（16位）初值公式</h4>
+                        <p class="formula">TH0 = (65536 - T × fosc / 12) / 256</p>
+                        <p class="formula">TL0 = (65536 - T × fosc / 12) % 256</p>
+                        <p>示例：fosc=12MHz，欲定时50ms</p>
+                        <p class="formula" style="margin-top:0.5rem;">TH0 = (65536 - 0.05 × 12×10⁶ / 12) / 256<br>
+                        = (65536 - 50000) / 256 = 15536 / 256 ≈ 60 → <span class="addr">0x3C</span><br>
+                        TL0 = 15536 % 256 = 176 → <span class="addr">0xB0</span></p>
+                    </div>
+
+                    <h3>// 数码管段码</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-understand">理解</span>共阳极数码管段码</h4>
+                        <table>
+                            <tr><th>数字</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th></tr>
+                            <tr><td>段码</td><td class="addr">C0H</td><td class="addr">F9H</td><td class="addr">A4H</td><td class="addr">B0H</td><td class="addr">99H</td><td class="addr">92H</td><td class="addr">82H</td><td class="addr">F8H</td><td class="addr">80H</td><td class="addr">90H</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== QUICK REFERENCE CARDS ===== -->
+        <section class="card" id="quick-ref">
+            <div class="card-header">
+                <h2><span class="icon">⚡</span> 速记卡片</h2>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="card-body">
+
+                    <h3>// 寄存器速记</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="sfr-tag sfr-bit">PSW</span> 程序状态字</h4>
+                        <table>
+                            <tr><th>位</th><th>名称</th><th>功能</th></tr>
+                            <tr><td>7</td><td>CY</td><td>进位标志</td></tr>
+                            <tr><td>6</td><td>AC</td><td>辅助进位</td></tr>
+                            <tr><td>5</td><td>F0</td><td>用户标志</td></tr>
+                            <tr><td>4-3</td><td>RS1/RS0</td><td>寄存器组选择（00-11）</td></tr>
+                            <tr><td>2</td><td>OV</td><td>溢出标志</td></tr>
+                            <tr><td>0</td><td>P</td><td>奇偶标志</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="knowledge-card">
+                        <h4><span class="sfr-tag sfr-timer">TMOD / TCON</span> 定时器控制</h4>
+                        <p><strong>TMOD（不可位寻址，地址 89H）：</strong></p>
+                        <table>
+                            <tr><th>位</th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+                            <tr><td>功能</td><td>GATE</td><td>C/T</td><td>M1</td><td>M0</td><td>GATE</td><td>C/T</td><td>M1</td><td>M0</td></tr>
+                            <tr><td>对象</td><td colspan="4">定时器1</td><td colspan="4">定时器0</td></tr>
+                        </table>
+                    </div>
+
+                    <h3>// 复位后SFR初值</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="level-tag level-tag-master">掌握</span>必记复位值</h4>
+                        <table>
+                            <tr><th>寄存器</th><th>复位值</th><th>含义</th></tr>
+                            <tr><td>PC</td><td class="addr">0000H</td><td>程序从 0000H 开始</td></tr>
+                            <tr><td>SP</td><td class="addr">07H</td><td>堆栈指针指向 07H</td></tr>
+                            <tr><td>P0-P3</td><td class="addr">FFH</td><td>I/O口全为高电平</td></tr>
+                            <tr><td>PSW</td><td class="addr">00H</td><td>选择第0组寄存器</td></tr>
+                            <tr><td>IE</td><td class="addr">00H</td><td>中断全部禁止</td></tr>
+                            <tr><td>IP</td><td class="addr">00H</td><td>低优先级</td></tr>
+                        </table>
+                    </div>
+
+                    <h3>// 常用寄存器地址</h3>
+                    <div class="knowledge-card">
+                        <h4><span class="sfr-tag sfr-bit">SFR</span> 地址速查</h4>
+                        <table>
+                            <tr><th>寄存器</th><th>地址</th><th>可位寻址</th></tr>
+                            <tr><td>P0</td><td class="addr">80H</td><td>✅</td></tr>
+                            <tr><td>SP</td><td class="addr">81H</td><td>❌</td></tr>
+                            <tr><td>P1</td><td class="addr">90H</td><td>✅</td></tr>
+                            <tr><td>SCON</td><td class="addr">98H</td><td>✅</td></tr>
+                            <tr><td>P2</td><td class="addr">A0H</td><td>✅</td></tr>
+                            <tr><td>IE</td><td class="addr">A8H</td><td>✅</td></tr>
+                            <tr><td>P3</td><td class="addr">B0H</td><td>✅</td></tr>
+                            <tr><td>IP</td><td class="addr">B8H</td><td>✅</td></tr>
+                            <tr><td>TCON</td><td class="addr">88H</td><td>✅</td></tr>
+                            <tr><td>TMOD</td><td class="addr">89H</td><td>❌</td></tr>
+                        </table>
+                        <p class="sfr-legend">
+                            <span class="sfr-tag sfr-io">IO口</span>
+                            <span class="sfr-tag sfr-bit">可位寻址</span>
+                            <span class="sfr-tag sfr-int">中断</span>
+                            <span class="sfr-tag sfr-timer">定时器</span>
+                            <span class="sfr-tag sfr-uart">串口</span>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CODE TEMPLATES ===== -->
+        <section class="card" id="code-templates">
+            <div class="card-header">
+                <h2><span class="icon">📄</span> 代码模板</h2>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="card-body">
+
+                    <h3>// 流水灯（三种方法）</h3>
+                    <div class="code-template">
+                        <h4>📄 方法一：循环移位</h4>
+                        <pre><code>#include &lt;reg51.h&gt;
+void delay(unsigned int ms) {
+    unsigned int i, j;
+    for (i = ms; i > 0; i--)
+        for (j = 120; j > 0; j--);
+}
+
+void main() {
+    unsigned char i;
+    while (1) {
+        P1 = 0xFE;  // 1111 1110
+        for (i = 0; i < 8; i++) {
+            delay(500);
+            P1 = (P1 << 1) | 0x01;
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="code-template">
+                        <h4>📄 方法二：数组查表</h4>
+                        <pre><code>#include &lt;reg51.h&gt;
+void delay(unsigned int ms);
+
+unsigned char code table[] = {
+    0xFE, 0xFD, 0xFB, 0xF7,
+    0xEF, 0xDF, 0xBF, 0x7F
+};
+
+void main() {
+    unsigned char i;
+    while (1) {
+        for (i = 0; i < 8; i++) {
+            P1 = table[i];
+            delay(500);
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <h3>// 外部中断</h3>
+                    <div class="code-template">
+                        <h4>📄 INT0 下降沿触发</h4>
+                        <pre><code>#include &lt;reg51.h&gt;
+sbit LED = P1^0;
+
+void main() {
+    EA = 1;      // 总中断允许
+    EX0 = 1;     // 允许INT0中断
+    IT0 = 1;     // 下降沿触发
+    while (1);
+}
+
+void Int0_ISR() interrupt 0 {
+    LED = !LED;  // 取反LED
+}</code></pre>
+                    </div>
+
+                    <h3>// 数码管动态扫描</h3>
+                    <div class="code-template">
+                        <h4>📄 共阳极数码管显示"0123"</h4>
+                        <pre><code>#include &lt;reg51.h&gt;
+// 共阳极段码表：0-9
+unsigned char code seg[] = {
+    0xC0, 0xF9, 0xA4, 0xB0,
+    0x99, 0x92, 0x82, 0xF8,
+    0x80, 0x90
+};
+
+void delay(unsigned int ms);
+
+void main() {
+    while (1) {
+        P2 = 0x01;  // 位选第1位
+        P0 = seg[0]; // 显示"0"
+        delay(5);
+
+        P2 = 0x02;  // 位选第2位
+        P0 = seg[1]; // 显示"1"
+        delay(5);
+
+        P2 = 0x04;  // 位选第3位
+        P0 = seg[2]; // 显示"2"
+        delay(5);
+
+        P2 = 0x08;  // 位选第4位
+        P0 = seg[3]; // 显示"3"
+        delay(5);
+    }
+}</code></pre>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TABLE SHOWCASE ===== -->
+        <section class="card" id="table-demo">
+            <div class="card-header">
+                <h2><span class="icon">📊</span> 表格展示</h2>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="card-body">
+                    <div class="info-box">
+                        review-html 自动将超过5列的表格转置为纵向排列，优化移动端阅读体验
+                    </div>
+
+                    <h3>// 考试题型与分值</h3>
+                    <table>
+                        <tr><th>题型</th><th>分值</th><th>题量</th><th>说明</th></tr>
+                        <tr><td>选择题</td><td>10分</td><td>10题</td><td>每题1分</td></tr>
+                        <tr><td>填空题</td><td>10分</td><td>10空</td><td>每空1分</td></tr>
+                        <tr><td>简答题</td><td>12分</td><td>3题</td><td>每题4分</td></tr>
+                        <tr><td>C语言编程题</td><td>16分</td><td>1题</td><td>要求画流程图</td></tr>
+                        <tr><td>C51编程题</td><td>12分</td><td>2题</td><td>每题6分</td></tr>
+                        <tr><td>分析电路编程题</td><td>30分</td><td>3题</td><td>每题10分</td></tr>
+                        <tr><td>电路设计题</td><td>10分</td><td>1题</td><td>画电路图</td></tr>
+                    </table>
+
+                    <h3>// 期末成绩构成</h3>
+                    <table>
+                        <tr><th>项目</th><th>占比</th><th>备注</th></tr>
+                        <tr><td>平时成绩</td><td>20%</td><td>出勤 + 作业</td></tr>
+                        <tr><td>实验成绩</td><td>30%</td><td>实验报告 + 操作</td></tr>
+                        <tr><td>期末考试</td><td>50%</td><td>闭卷笔试</td></tr>
+                    </table>
+
+                    <h3>// 晶振频率与机器周期对照</h3>
+                    <table>
+                        <tr><th>晶振频率</th><th>振荡周期</th><th>机器周期</th><th>适用场景</th></tr>
+                        <tr><td>6 MHz</td><td>1/6 μs</td><td>2 μs</td><td>低功耗</td></tr>
+                        <tr><td>11.0592 MHz</td><td>≈ 0.0904 μs</td><td>≈ 1.085 μs</td><td>串口通信</td></tr>
+                        <tr><td>12 MHz</td><td>1/12 μs</td><td><strong>1 μs</strong></td><td>标准计时</td></tr>
+                        <tr><td>24 MHz</td><td>1/24 μs</td><td>0.5 μs</td><td>高速应用</td></tr>
+                    </table>
+
+                    <h3>// 工作方式选择（M1 M0）</h3>
+                    <table>
+                        <tr><th>M1</th><th>M0</th><th>工作方式</th><th>位数</th><th>最大计数值</th></tr>
+                        <tr><td>0</td><td>0</td><td>方式0</td><td>13位</td><td>8192</td></tr>
+                        <tr><td>0</td><td>1</td><td>方式1</td><td>16位</td><td>65536</td></tr>
+                        <tr><td>1</td><td>0</td><td>方式2</td><td>8位自动重装</td><td>256</td></tr>
+                        <tr><td>1</td><td>1</td><td>方式3</td><td>2×8位</td><td>256</td></tr>
+                    </table>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========== FLOATING BUTTONS ========== -->
+    <button class="collapse-all" id="collapseAll" title="折叠/展开所有">📖</button>
+    <button class="back-to-top" id="backToTop" title="返回顶部">↑</button>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <p>基于 <span class="highlight">review-html</span> 生成的考前速记页面 Demo</p>
+        <p>📖 一键生成考前速记网页 · 支持课件/教材/笔记导入</p>
+        <p class="footer-note">Composed by MashedPotato</p>
+        <p class="footer-note" id="lastModified"></p>
+    </footer>
+
+    <script>
+    // ========== ACCORDION (card collapse) ==========
+    document.querySelectorAll('.card-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const card = header.parentElement;
+            const wasActive = card.classList.contains('active');
+
+            // 如果已展开则折叠，否则展开
+            if (wasActive) {
+                card.classList.remove('active');
+            } else {
+                card.classList.add('active');
+            }
+        });
+    });
+
+    // ========== SUB-ACCORDION ==========
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.accordion-icon');
+            content.classList.toggle('active');
+            if (icon) icon.classList.toggle('active');
+        });
+    });
+
+    // ========== COLLAPSE ALL ==========
+    const collapseBtn = document.getElementById('collapseAll');
+    let allCollapsed = false;
+
+    collapseBtn.addEventListener('click', () => {
+        const cards = document.querySelectorAll('.card');
+        if (allCollapsed) {
+            cards.forEach(c => c.classList.add('active'));
+            collapseBtn.textContent = '📖';
+        } else {
+            cards.forEach(c => c.classList.remove('active'));
+            collapseBtn.textContent = '📕';
+        }
+        allCollapsed = !allCollapsed;
+    });
+
+    // ========== BACK TO TOP ==========
+    const backBtn = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            backBtn.classList.add('visible');
+        } else {
+            backBtn.classList.remove('visible');
+        }
+    });
+
+    backBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ========== FULLSCREEN MENU ==========
+    const menuToggle = document.getElementById('menuToggle');
+    const fullscreenNav = document.getElementById('fullscreenNav');
+
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('active');
+        fullscreenNav.classList.toggle('active');
+        document.body.style.overflow = fullscreenNav.classList.contains('active') ? 'hidden' : '';
+    });
+
+    function closeMenu() {
+        menuToggle.classList.remove('active');
+        fullscreenNav.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ========== LAST MODIFIED ==========
+    document.getElementById('lastModified').textContent = new Date().toLocaleDateString('zh-CN', {
+        year: 'numeric', month: 'long', day: 'numeric'
+    });
+    </script>
+
+</body>
+</html>
