@@ -5,7 +5,10 @@
       "Bash(git ls-remote *)",
       "Bash(git add *)",
       "Bash(git reset *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git commit -m 'feat: 创建 demo.html 展示核心功能 *)",
+      "Bash(git pull *)",
+      "Bash(git stash *)"
     ]
   }
 }
